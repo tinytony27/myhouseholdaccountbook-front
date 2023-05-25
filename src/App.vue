@@ -1,9 +1,29 @@
+<script setup lang="ts">
+
+</script>
+
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <header class="fixed left-0 top-0 h-14 w-full z-20 py-1 text-center leading-8 bg-blue-100">
+  </header>
+  <router-view class="fixed left-0 top-0 w-full pt-14 pb-14"/>
+  <nav class="fixed flex left-0 bottom-0 h-14 w-full z-20 bg-blue-100">
+    <router-link to="/" class="mr-2">
+      <div>
+        <div>
+          <font-awesome-icon icon="fa-solid fa-house" />
+        </div>
+        <div>ホーム</div>
+      </div>
+    </router-link>
+    <router-link to="/input">
+      <div>
+        <div>
+          <font-awesome-icon icon="fa-solid fa-receipt" />
+        </div>
+        <div>入力</div>
+      </div>
+    </router-link>
   </nav>
-  <router-view/>
 </template>
 
 <style>
@@ -13,10 +33,6 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
 }
 
 nav a {
