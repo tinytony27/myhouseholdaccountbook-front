@@ -7,3 +7,8 @@ type detailsType = {
   // deleted_flag: boolean;
   // deleted_date: string;
 };
+
+type categoryType = {
+  categoryID: number;
+  categoryName: string;
+};
