@@ -1,16 +1,22 @@
 <script setup lang="ts">
 // import HelloWorld from '@/components/HelloWorld.vue';
-import { onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
 
 const store = useStore();
+const saveFlag = ref<boolean>(false);
 
 onMounted(() => {
   store.dispatch('loadCategory');
 });
 
-const addElem = () => {
-  store.commit('add');
+const addElem = (index: number) => {
+  if(index === (store.state.inputList.length - 1)){
+    if(!saveFlag.value){
+      saveFlag.value = true;
+    }
+    store.commit('add');
+  }
 };
 const onEnterDate = (index:  number) => {
   const priceElem = document.getElementById('price'+index) as HTMLInputElement;
@@ -21,6 +27,11 @@ const onEnterPrice = (index:  number) => {
     const dateElem = document.getElementById('date'+(index+1)) as HTMLInputElement;
     dateElem.focus();
   }
+};
+
+const saveDetails = () => {
+
+  console.log('save');
 };
 </script>
 
@@ -36,7 +47,7 @@ const onEnterPrice = (index:  number) => {
             </label>
             <label class="">
               <!-- <span></span> -->
-              <input class="w-28 border" type="number" placeholder=" 金額 " :id="'price'+index" @keyup.enter="onEnterPrice(index)" @change="addElem" />
+              <input class="w-28 border" type="number" placeholder=" 金額 " :id="'price'+index" @keyup.enter="onEnterPrice(index)" @change="addElem(index)" />
             </label>
           </div>
           <div>
@@ -52,6 +63,9 @@ const onEnterPrice = (index:  number) => {
           </div>
         </div>
       </div>
+    </div>
+    <div class="absolute bottom-14 w-full h-10 rounded border-gray-300 border" :class="saveFlag ? 'bg-green-100' : 'bg-gray-100'" @click="saveDetails">
+      <span class="w-full h-full leading-10">保存</span>
     </div>
   </div>
 </template>

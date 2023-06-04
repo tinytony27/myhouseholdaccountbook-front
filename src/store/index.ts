@@ -12,6 +12,7 @@ export default createStore<dataType>({
       categoryID: 1,
       detailDate: '',
       price: null,
+      memo: '',
     // },{ detailsID: 0, categoryID: 1, detailDate: '', price: null,
     // },{ detailsID: 0, categoryID: 1, detailDate: '', price: null,
     // },{ detailsID: 0, categoryID: 1, detailDate: '', price: null,
@@ -58,6 +59,7 @@ export default createStore<dataType>({
         categoryID: 1,
         detailDate: '',
         price: null,
+        memo: '',
       };
       state.inputList.push(data);
     },
