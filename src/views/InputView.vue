@@ -2,12 +2,21 @@
 // import HelloWorld from '@/components/HelloWorld.vue';
 import { ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
+import apiClient from '@/common/http';
 
 const store = useStore();
 const saveFlag = ref<boolean>(false);
 
 onMounted(() => {
-  store.dispatch('loadCategory');
+  apiClient.get('/category')
+    .then( response => { return response.data; })
+    .then( json => {
+      // console.log(json);
+      store.dispatch('setCategory', json.category);
+    })
+    .catch((err) => {
+      console.info(err);
+    });
 });
 
 const addElem = (index: number) => {
@@ -18,19 +27,28 @@ const addElem = (index: number) => {
     store.commit('add');
   }
 };
-const onEnterDate = (index:  number) => {
+const onEnterDate = (index: number) => {
   const priceElem = document.getElementById('price'+index) as HTMLInputElement;
   priceElem.focus();
 };
-const onEnterPrice = (index:  number) => {
+const onEnterPrice = (index: number) => {
   if (index < store.state.inputList.length - 1) {
     const dateElem = document.getElementById('date'+(index+1)) as HTMLInputElement;
     dateElem.focus();
   }
 };
 
-const saveDetails = () => {
+const focusOutDate = (index: number) => {
+  console.log('blur date');
+  
+};
 
+const focusOutPrice = (index: number) => {
+  console.log('blur');
+};
+
+const saveDetails = () => {
+  if(!saveFlag.value) return;
   console.log('save');
 };
 </script>
@@ -43,11 +61,11 @@ const saveDetails = () => {
           <div class="mt-2 mb-2">
             <label class="mr-10">
               <!-- <span></span> -->
-              <input class="w-28 border" type="text" placeholder=" MM / DD " :id="'date'+index" @keyup.enter="onEnterDate(index)" />
+              <input class="w-28 px-2 border" type="text" placeholder="MM / DD" :id="'date'+index" @keyup.enter="onEnterDate(index)" @blur="focusOutDate(index)" />
             </label>
             <label class="">
               <!-- <span></span> -->
-              <input class="w-28 border" type="number" placeholder=" 金額 " :id="'price'+index" @keyup.enter="onEnterPrice(index)" @change="addElem(index)" />
+              <input class="w-28 border" type="number" placeholder=" 金額 " :id="'price'+index" @keyup.enter="onEnterPrice(index)" @change="addElem(index)" @blur="focusOutPrice(index)" />
             </label>
           </div>
           <div>

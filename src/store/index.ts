@@ -34,24 +34,34 @@ export default createStore<dataType>({
     loadCategory: (state) => {
       const c1 = {
         categoryID: 1,
-        categoryName: 'C1'
+        categoryName: 'cate1'
       };
       state.categoryList.push(c1);
       const c2 = {
         categoryID: 2,
-        categoryName: 'C2'
+        categoryName: 'cate2'
       };
       state.categoryList.push(c2);
       const c3 = {
         categoryID: 3,
-        categoryName: 'C3'
+        categoryName: 'cate3'
       };
       state.categoryList.push(c3);
       const c4 = {
         categoryID: 4,
-        categoryName: 'C4'
+        categoryName: 'cate4'
       };
       state.categoryList.push(c4);
+    },
+    setCategory: (state, payload: categoryType[]) => {
+      // console.log('start');
+      // console.log(payload);
+      for(let i = 0; i < payload.length; i++){
+        // console.log(i);
+        const tmp: categoryType = payload[i];
+        // console.log(tmp);
+        state.categoryList.push(tmp);
+      }
     },
     add: (state) => {
       const data = {
@@ -67,6 +77,9 @@ export default createStore<dataType>({
   actions: {
     loadCategory: (ctx) => {
       ctx.commit('loadCategory');
+    },
+    setCategory: (ctx, payload: categoryType[]) => {
+      ctx.commit('setCategory', payload);
     },
     add: (ctx) => {
       ctx.commit('add');
