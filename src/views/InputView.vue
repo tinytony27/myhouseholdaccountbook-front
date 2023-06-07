@@ -40,7 +40,26 @@ const onEnterPrice = (index: number) => {
 
 const focusOutDate = (index: number) => {
   console.log('blur date');
-  
+  const dateElem = document.getElementById('date'+index) as HTMLInputElement;
+  const dateData = new Date(dateElem.value);
+  const nowDate = new Date();
+  // console.log(dateData);
+  if(!Number.isNaN(dateData.getTime())){
+    // let year = dateData.getFullYear().toString().padStart(4, '0');
+    var count = ( dateElem.value.match( /\//g ) || [] ).length ;
+    let year = ((count === 1) ? nowDate.getFullYear() : dateData.getFullYear()).toString().padStart(4, '0');
+    const month = (dateData.getMonth() + 1).toString().padStart(2, '0');
+    const day = dateData.getDate().toString().padStart(2, '0');
+    dateElem.value = year + '/' + month + '/' + day;
+  }
+  else if(dateData.getTime() > nowDate.getTime()){
+    console.log('future');
+  }
+  else{
+    console.log('error');
+    dateElem.value = '';
+    dateElem.focus();
+  }
 };
 
 const focusOutPrice = (index: number) => {
