@@ -3,7 +3,7 @@ type detailsType = {
   categoryID: number;
   detailDate: string;
   price: number | null;
-  memo: string;
+  memo: string | null;
   // createdUserID: number;
   // deleted_flag: boolean;
   // deleted_date: string;

@@ -12,7 +12,8 @@ onMounted(() => {
     .then( response => { return response.data; })
     .then( json => {
       // console.log(json);
-      store.dispatch('setCategory', json.category);
+      store.commit('setCategory', json.category);
+      store.commit('initInputList');
     })
     .catch((err) => {
       console.info(err);
@@ -39,8 +40,9 @@ const onEnterPrice = (index: number) => {
 };
 
 const focusOutDate = (index: number) => {
-  console.log('blur date');
+  // console.log('blur date');
   const dateElem = document.getElementById('date'+index) as HTMLInputElement;
+  if(dateElem === null) return;
   const dateData = new Date(dateElem.value);
   const nowDate = new Date();
   // console.log(dateData);
@@ -51,14 +53,19 @@ const focusOutDate = (index: number) => {
     const month = (dateData.getMonth() + 1).toString().padStart(2, '0');
     const day = dateData.getDate().toString().padStart(2, '0');
     dateElem.value = year + '/' + month + '/' + day;
+    
+    const inputData: detailsType = store.state.inputList[index];
+    inputData.detailDate = year + '/' + month + '/' + day;
   }
   else if(dateData.getTime() > nowDate.getTime()){
     console.log('future');
   }
   else{
     console.log('error');
+    if(dateElem.value !== ''){
+      dateElem.focus();
+    }
     dateElem.value = '';
-    dateElem.focus();
   }
 };
 
@@ -68,6 +75,20 @@ const focusOutPrice = (index: number) => {
 
 const saveDetails = () => {
   if(!saveFlag.value) return;
+  const data: detailsType[] = [];
+  for(let i = 0; i < store.state.inputList.length; i++){
+    const tmpInput: detailsType = store.state.inputList[i];
+    // console.log(tmpInput);
+    if(tmpInput.detailDate !== '' && (tmpInput.price !== null && tmpInput.price > 0)){
+      data.push(tmpInput);
+    }
+  }
+  console.log(data);
+  apiClient.post('/setdetails', data)
+    .then( response => { console.log(response);})
+    .catch((err) => {
+      console.info(err);
+    });
   console.log('save');
 };
 </script>
@@ -80,16 +101,16 @@ const saveDetails = () => {
           <div class="mt-2 mb-2">
             <label class="mr-10">
               <!-- <span></span> -->
-              <input class="w-28 px-2 border" type="text" placeholder="MM / DD" :id="'date'+index" @keyup.enter="onEnterDate(index)" @blur="focusOutDate(index)" />
+              <input class="w-28 px-2 border" v-model="elem.detailDate" type="text" placeholder="MM / DD" :id="'date'+index" @keyup.enter="onEnterDate(index)" @blur="focusOutDate(index)" />
             </label>
             <label class="">
               <!-- <span></span> -->
-              <input class="w-28 border" type="number" placeholder=" 金額 " :id="'price'+index" @keyup.enter="onEnterPrice(index)" @change="addElem(index)" @blur="focusOutPrice(index)" />
+              <input class="w-28 border" v-model="elem.price" type="number" placeholder=" 金額 " :id="'price'+index" @keyup.enter="onEnterPrice(index)" @change="addElem(index)" @blur="focusOutPrice(index)" />
             </label>
           </div>
           <div>
             <label class="mr-5">
-              <select class="w-20 border" name="pets" id="pet-select">
+              <select class="w-20 border" v-model="elem.categoryID" name="pets" id="pet-select">
                 <option v-for="elem in store.state.categoryList" :key="elem.categoryID" :value="elem.categoryID">{{ elem.categoryName }}</option>
               </select>
             </label>

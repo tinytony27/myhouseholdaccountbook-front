@@ -7,30 +7,23 @@ type dataType = {
 
 export default createStore<dataType>({
   state: {
-    inputList: [{
-      detailsID: 0,
-      categoryID: 1,
-      detailDate: '',
-      price: null,
-      memo: '',
-    // },{ detailsID: 0, categoryID: 1, detailDate: '', price: null,
-    // },{ detailsID: 0, categoryID: 1, detailDate: '', price: null,
-    // },{ detailsID: 0, categoryID: 1, detailDate: '', price: null,
-    // },{ detailsID: 0, categoryID: 1, detailDate: '', price: null,
-    // },{ detailsID: 0, categoryID: 1, detailDate: '', price: null,
-    // },{ detailsID: 0, categoryID: 1, detailDate: '', price: null,
-    // },{ detailsID: 0, categoryID: 1, detailDate: '', price: null,
-    // },{ detailsID: 0, categoryID: 1, detailDate: '', price: null,
-    // },{ detailsID: 0, categoryID: 1, detailDate: '', price: null,
-    // },{ detailsID: 0, categoryID: 1, detailDate: '', price: null,
-    // },{ detailsID: 0, categoryID: 1, detailDate: '', price: null,
-    // },{ detailsID: 0, categoryID: 1, detailDate: '', price: null,
-    }],
+    inputList: [],
     categoryList: [],
   },
   getters: {
   },
   mutations: {
+    initInputList: (state) => {
+      state.inputList = [];
+      const input: detailsType = {
+        detailsID: 0,
+        categoryID: state.categoryList[0].categoryID,
+        detailDate: '',
+        price: null,
+        memo: null,
+      };
+      state.inputList.push(input);
+    },
     loadCategory: (state) => {
       const c1 = {
         categoryID: 1,
@@ -56,6 +49,7 @@ export default createStore<dataType>({
     setCategory: (state, payload: categoryType[]) => {
       // console.log('start');
       // console.log(payload);
+      state.categoryList = [];
       for(let i = 0; i < payload.length; i++){
         // console.log(i);
         const tmp: categoryType = payload[i];
@@ -66,10 +60,10 @@ export default createStore<dataType>({
     add: (state) => {
       const data = {
         detailsID: 0,
-        categoryID: 1,
+        categoryID: state.categoryList[0].categoryID,
         detailDate: '',
         price: null,
-        memo: '',
+        memo: null,
       };
       state.inputList.push(data);
     },
