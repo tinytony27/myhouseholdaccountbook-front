@@ -17,5 +17,7 @@ module.exports = {
   },
   globals: {
     detailsType: true,
+    categoryType: true,
+    statisticsType: true,
   }
 }

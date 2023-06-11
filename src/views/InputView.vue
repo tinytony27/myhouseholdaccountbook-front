@@ -8,7 +8,7 @@ const store = useStore();
 const saveFlag = ref<boolean>(false);
 
 onMounted(() => {
-  apiClient.get('/category')
+  apiClient.get('/getcategory')
     .then( response => { return response.data; })
     .then( json => {
       // console.log(json);
@@ -101,11 +101,11 @@ const saveDetails = () => {
           <div class="mt-2 mb-2">
             <label class="mr-10">
               <!-- <span></span> -->
-              <input class="w-28 px-2 border" v-model="elem.detailDate" type="text" placeholder="MM / DD" :id="'date'+index" @keyup.enter="onEnterDate(index)" @blur="focusOutDate(index)" />
+              <input class="w-28 px-1 border" v-model="elem.detailDate" type="text" placeholder="MM / DD" :id="'date'+index" @keyup.enter="onEnterDate(index)" @blur="focusOutDate(index)" />
             </label>
             <label class="">
               <!-- <span></span> -->
-              <input class="w-28 border" v-model="elem.price" type="number" placeholder=" 金額 " :id="'price'+index" @keyup.enter="onEnterPrice(index)" @change="addElem(index)" @blur="focusOutPrice(index)" />
+              <input class="w-28 px-1 border" v-model="elem.price" type="number" placeholder="金額" :id="'price'+index" @keyup.enter="onEnterPrice(index)" @change="addElem(index)" @blur="focusOutPrice(index)" />
             </label>
           </div>
           <div>
