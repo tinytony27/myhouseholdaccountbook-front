@@ -17,7 +17,7 @@ onMounted(() => {
   apiClient.get('/getstatistics')
     .then( response => { return response.data; })
     .then( json => {
-      console.log(json.details);
+      // console.log(json.details);
       store.dispatch('setStatisticsData', json.details);
     })
     .catch((err) => {

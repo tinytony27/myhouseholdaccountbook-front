@@ -116,7 +116,7 @@ export default createStore<dataType>({
           if(y === oldestYear && m <= oldestMonth ) break;
         }
       }
-      console.log(state.statisticsData);
+      // console.log(state.statisticsData);
     },
     add: (state) => {
       const data = {
