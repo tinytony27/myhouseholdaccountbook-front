@@ -1,9 +1,15 @@
 import { createStore } from 'vuex';
 
+type authType = {
+  userID: string | null;
+  userName: string | null;
+};
+
 type dataType = {
   inputList: detailsType[];
   categoryList: categoryType[];
   statisticsData: statisticsType[];
+  auth: authType;
 };
 
 export default createStore<dataType>({
@@ -11,6 +17,10 @@ export default createStore<dataType>({
     inputList: [],
     categoryList: [],
     statisticsData: [],
+    auth: {
+      userID: sessionStorage.getItem('userID'),
+      userName: sessionStorage.getItem('userName')
+    }
   },
   getters: {
   },
@@ -47,6 +57,12 @@ export default createStore<dataType>({
         categoryName: 'cate4'
       };
       state.categoryList.push(c4);
+    },
+    setAuth: (state, payload: authType) => {
+      state.auth.userID = payload.userID;
+      state.auth.userName = payload.userName;
+      sessionStorage.setItem('userID', String(payload.userID));
+      sessionStorage.setItem('userName', String(payload.userName));
     },
     setCategory: (state, payload: categoryType[]) => {
       // console.log('start');
