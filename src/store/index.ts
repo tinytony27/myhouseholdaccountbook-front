@@ -33,6 +33,7 @@ export default createStore<dataType>({
         detailDate: '',
         price: null,
         memo: null,
+        createdUserID: state.auth.userID,
       };
       state.inputList.push(input);
     },
@@ -119,12 +120,13 @@ export default createStore<dataType>({
       // console.log(state.statisticsData);
     },
     add: (state) => {
-      const data = {
+      const data: detailsType = {
         detailsID: 0,
         categoryID: state.categoryList[0].categoryID,
         detailDate: '',
         price: null,
         memo: null,
+        createdUserID: state.auth.userID
       };
       state.inputList.push(data);
     },

@@ -4,7 +4,7 @@ type detailsType = {
   detailDate: string;
   price: number | null;
   memo: string | null;
-  // createdUserID: number;
+  createdUserID: string | null;
   // deleted_flag: boolean;
   // deleted_date: string;
 };
