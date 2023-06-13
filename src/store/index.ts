@@ -106,7 +106,7 @@ export default createStore<dataType>({
           }
           else{
             const data: statisticsType = {
-              month: String(y) + '/' + String(m),
+              month: y.toString() + '/' + m.toString().padStart(2, '0'),
               total: Number(0),
             };
             state.categoryList.forEach((elem: categoryType) => {

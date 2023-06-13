@@ -3,6 +3,7 @@
 import { ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import apiClient from '@/common/http';
+import router from '@/router';
 
 const store = useStore();
 const saveFlag = ref<boolean>(false);
@@ -16,7 +17,7 @@ onMounted(() => {
       store.commit('initInputList');
     })
     .catch((err) => {
-      console.info(err);
+      console.error(err);
     });
 });
 
@@ -40,38 +41,40 @@ const onEnterPrice = (index: number) => {
 };
 
 const focusOutDate = (index: number) => {
-  // console.log('blur date');
   const dateElem = document.getElementById('date'+index) as HTMLInputElement;
   if(dateElem === null) return;
   const dateData = new Date(dateElem.value);
   const nowDate = new Date();
-  // console.log(dateData);
   if(!Number.isNaN(dateData.getTime())){
-    // let year = dateData.getFullYear().toString().padStart(4, '0');
-    var count = ( dateElem.value.match( /\//g ) || [] ).length ;
+    const count = ( dateElem.value.match( /\//g ) || [] ).length ;
     let year = ((count === 1) ? nowDate.getFullYear() : dateData.getFullYear()).toString().padStart(4, '0');
     const month = (dateData.getMonth() + 1).toString().padStart(2, '0');
     const day = dateData.getDate().toString().padStart(2, '0');
-    dateElem.value = year + '/' + month + '/' + day;
-    
+    const dateStr = year + '/' + month + '/' + day;
+    if(new Date(dateStr).getTime() > nowDate.getTime()){
+      dateElem.focus();
+      dateElem.value = '';
+      dateElem.setCustomValidity("未来の日付は入力できません！");
+      dateElem.reportValidity();
+      return;
+    }
+    dateElem.value = dateStr;
     const inputData: detailsType = store.state.inputList[index];
-    inputData.detailDate = year + '/' + month + '/' + day;
-  }
-  else if(dateData.getTime() > nowDate.getTime()){
-    console.log('future');
+    inputData.detailDate = dateStr;
   }
   else{
-    console.log('error');
     if(dateElem.value !== ''){
       dateElem.focus();
+      dateElem.setCustomValidity("無効な日付です！");
+      dateElem.reportValidity();
     }
     dateElem.value = '';
   }
 };
 
-const focusOutPrice = (index: number) => {
-  console.log('blur');
-};
+// const focusOutPrice = (index: number) => {
+//   console.log('blur');
+// };
 
 const saveDetails = () => {
   if(!saveFlag.value) return;
@@ -83,13 +86,15 @@ const saveDetails = () => {
       data.push(tmpInput);
     }
   }
-  console.log(data);
+  // console.log(data);
   apiClient.post('/setdetails', data)
-    .then( response => { console.log(response);})
+    .then( response => {
+      console.info(response);
+      router.push('/');
+    })
     .catch((err) => {
-      console.info(err);
+      console.error(err);
     });
-  console.log('save');
 };
 </script>
 
@@ -101,11 +106,27 @@ const saveDetails = () => {
           <div class="mt-2 mb-2">
             <label class="mr-10">
               <!-- <span></span> -->
-              <input class="w-28 px-1 border" v-model="elem.detailDate" type="text" placeholder="MM / DD" :id="'date'+index" @keyup.enter="onEnterDate(index)" @blur="focusOutDate(index)" />
+              <input
+                class="w-28 px-1 border"
+                v-model="elem.detailDate"
+                type="text"
+                placeholder="MM / DD"
+                :id="'date'+index"
+                @keyup.enter="onEnterDate(index)"
+                @blur="focusOutDate(index)"
+                autocomplete="off"
+              />
             </label>
             <label class="">
-              <!-- <span></span> -->
-              <input class="w-28 px-1 border" v-model="elem.price" type="number" placeholder="金額" :id="'price'+index" @keyup.enter="onEnterPrice(index)" @change="addElem(index)" @blur="focusOutPrice(index)" />
+              <input
+                class="w-28 px-1 border"
+                v-model="elem.price"
+                type="number"
+                placeholder="金額"
+                :id="'price'+index"
+                @keyup.enter="onEnterPrice(index)"
+                @change="addElem(index)"
+              />
             </label>
           </div>
           <div>
@@ -115,8 +136,12 @@ const saveDetails = () => {
               </select>
             </label>
             <label>
-              <!-- <span></span> -->
-              <input class="w-40 border" type="text" placeholder=" メモ(任意) "/>
+              <input
+                class="w-40 px-1 border"
+                type="text"
+                placeholder="メモ(任意)"
+                autocomplete="off"
+              />
             </label>
           </div>
         </div>
