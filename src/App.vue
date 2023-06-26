@@ -3,10 +3,10 @@
 </script>
 
 <template>
-  <header class="fixed left-0 top-0 h-14 w-full z-20 py-1 text-center leading-8 bg-blue-100">
+  <header class="fixed left-0 top-0 h-14 w-full z-20 py-1 text-center leading-8 bg-blue-200">
   </header>
   <router-view class="fixed left-0 top-0 w-full pt-14 pb-14"/>
-  <nav class="fixed flex left-0 bottom-0 h-14 w-full z-20 bg-blue-100">
+  <nav class="fixed flex left-0 bottom-0 h-14 w-full z-20 bg-blue-200">
     <router-link to="/" class="mr-2">
       <div>
         <div>

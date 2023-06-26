@@ -19,5 +19,6 @@ module.exports = {
     detailsType: true,
     categoryType: true,
     statisticsType: true,
+    defineProps: true,
   }
 }

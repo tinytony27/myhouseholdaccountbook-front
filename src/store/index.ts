@@ -10,6 +10,8 @@ type dataType = {
   categoryList: categoryType[];
   statisticsData: statisticsType[];
   auth: authType;
+  monthData: number[];
+  loading: boolean;
 };
 
 export default createStore<dataType>({
@@ -20,9 +22,40 @@ export default createStore<dataType>({
     auth: {
       userID: sessionStorage.getItem('userID'),
       userName: sessionStorage.getItem('userName')
-    }
+    },
+    monthData: [],
+    loading: false,
   },
   getters: {
+    getTotalList: (state) => {
+      const totalList: number[] = [];
+      for(let i = state.statisticsData.length - 1; i >= 0; i--){
+        const statisticsData = state.statisticsData[i];
+        totalList.push(statisticsData.total);
+      }
+      return totalList;
+    },
+    getMonthData: (state) => {
+      const monthData: number[] = [];
+      const tmpData = state.statisticsData[0];
+      // console.log(tmpData);
+      for(let i = 0; i < state.categoryList.length; i++){
+        const category = state.categoryList[i].categoryName;
+        monthData.push(Number(tmpData[category]));
+      }
+      // console.log(monthData);
+      return monthData;
+    },
+    getCategoryNameList: (state) => {
+      const categoryNameList = state.categoryList.map(item => item.categoryName);
+      return categoryNameList;
+    },
+    getTotal: (state) => {
+      if(state.statisticsData[0]){
+        return state.statisticsData[0].total.toLocaleString();
+      }
+      return '';
+    },
   },
   mutations: {
     initInputList: (state) => {
@@ -68,13 +101,14 @@ export default createStore<dataType>({
     setCategory: (state, payload: categoryType[]) => {
       // console.log('start');
       // console.log(payload);
-      state.categoryList = [];
-      for(let i = 0; i < payload.length; i++){
-        // console.log(i);
-        const tmp: categoryType = payload[i];
-        // console.log(tmp);
-        state.categoryList.push(tmp);
-      }
+      state.categoryList = payload;
+      // for(let i = 0; i < payload.length; i++){
+      //   // console.log(i);
+      //   const tmp: categoryType = payload[i];
+      //   // console.log(tmp);
+      //   state.categoryList.push(tmp);
+      // }
+      // console.log('set category in method.');
     },
     setStatisticsData: (state, payload: statisticsType[]) => {
       state.statisticsData = [];
@@ -129,6 +163,15 @@ export default createStore<dataType>({
         createdUserID: state.auth.userID
       };
       state.inputList.push(data);
+    },
+    setMonthData: (state, data: string[]) => {
+      state.monthData = data.map(Number);
+    },
+    loading: (state) => {
+      state.loading = true;
+    },
+    loaded: (state) => {
+      state.loading = false;
     },
   },
   actions: {
