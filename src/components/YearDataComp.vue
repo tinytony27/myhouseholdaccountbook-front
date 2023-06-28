@@ -22,6 +22,7 @@ import {
 // 今回はRadar-chartを作成するので、import。
 import { Bar } from 'vue-chartjs';
 
+const props = defineProps(['matrixDataSet', 'graphDataSet', 'selectedFilter']);
 const store = useStore();
 
 // ここでChartJSでこれらを使います〜と登録してあげます。
@@ -32,7 +33,7 @@ const data:ChartData<'bar'> = {
   labels: BAR_LABEL.slice(0, 12),
   datasets: [{
     // label: 'My First Dataset',
-    data: store.getters.getTotalList,
+    data: props['graphDataSet'],
     backgroundColor: BAR_BACKGROUND_COLOR.slice(0, 12),
     borderColor: BAR_BORDER_COLOR.slice(0, 12),
     borderWidth: 1
@@ -52,9 +53,30 @@ const options:ChartOptions<'bar'> = {
 </script>
 
 <template>
-  <div>aaaaaa</div>
-  <div>
-    <Bar :data="data" :options="options" class="h-80"/>
+  <div class="m-1">
+    <div class="">
+      <Bar :data="data" :options="options" class="h-80"/>
+    </div>
+  </div>
+  <div class="relative h-full w-full pt-1 pb-28 overflow-y-scroll">
+    <div class="w-full">
+      <table class="mx-auto">
+        <thead>
+          <tr>
+            <th class="w-24 border">年/月</th>
+            <th class="w-28 border">合計</th>
+            <th class="w-28 border" :class="(selectedFilter === cate.categoryID) ? 'bg-red-100' : ''" v-for="cate in store.state.categoryList" :key="cate.categoryID">{{ cate.categoryName }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="data in matrixDataSet" :key="data.month">
+            <td class="border">{{ data.month }}</td>
+            <td class="border">{{ Number(data.total).toLocaleString() }}円</td>
+            <td class="border" :class="(selectedFilter === cate.categoryID) ? 'bg-red-100' : ''" v-for="cate in store.state.categoryList" :key="cate.categoryID">{{ Number(data[cate.categoryName]).toLocaleString() }}円</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 

@@ -5,9 +5,9 @@ import type { ChartData, ChartOptions } from 'chart.js';
 import { Chart as ChartJS, Tooltip, Legend, ArcElement } from 'chart.js';
 import { Doughnut } from 'vue-chartjs';
 import { DOUGHNUT_BACKGROUND_COLOR, MONTH_DATA, TABLE_HEAD } from '@/common/const';
-import apiClient from '@/common/http';
+// import apiClient from '@/common/http';
 
-defineProps(['dataSet']);
+const props = defineProps(['matrixDataSet', 'graphDataSet']);
 const store = useStore();
 // let totalData: number[] = [];
 
@@ -15,7 +15,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const data:ChartData<'doughnut'> = {
   labels: store.getters.getCategoryNameList,
   datasets: [{
-    data: store.state.monthData,
+    data: props['graphDataSet'],
     backgroundColor: DOUGHNUT_BACKGROUND_COLOR,
     hoverOffset: 5
   }]
@@ -34,9 +34,9 @@ const options:ChartOptions<'doughnut'> = {
 
 <template>
   <div class="relative my-1">
-    <div class="w-32 absolute-center">
+    <div class="w-32 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
       <span class="w-12 font-bold text-lg">合計：</span>
-      <span class="w-20 font-bold text-lg">{{ Number(dataSet.total).toLocaleString() }}</span>
+      <span class="w-20 font-bold text-lg">{{ Number(matrixDataSet.total).toLocaleString() }}</span>
     </div>
     <div class="">
       <Doughnut :data="data" :options="options" class="w-72 h-72" />
@@ -53,11 +53,10 @@ const options:ChartOptions<'doughnut'> = {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(dataList, i) in dataSet.details" :key="i">
-            <td class="border">{{ dataList[0] }}</td>
-            
-            <td class="border">{{ Number(dataList[2]).toLocaleString() }}円</td>
-            <td class="border">{{ dataList[1] }}％</td>
+          <tr v-for="(dataList, i) in matrixDataSet.details" :key="i">
+            <td class="border">{{ dataList.category }}</td>
+            <td class="border">{{ Number(dataList.total).toLocaleString() }}円</td>
+            <td class="border">{{ dataList.rate }}％</td>
           </tr>
         </tbody>
       </table>
@@ -66,7 +65,4 @@ const options:ChartOptions<'doughnut'> = {
 </template>
 
 <style scoped>
-.absolute-center {
-  @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
-}
 </style>

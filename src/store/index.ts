@@ -27,34 +27,9 @@ export default createStore<dataType>({
     loading: false,
   },
   getters: {
-    getTotalList: (state) => {
-      const totalList: number[] = [];
-      for(let i = state.statisticsData.length - 1; i >= 0; i--){
-        const statisticsData = state.statisticsData[i];
-        totalList.push(statisticsData.total);
-      }
-      return totalList;
-    },
-    getMonthData: (state) => {
-      const monthData: number[] = [];
-      const tmpData = state.statisticsData[0];
-      // console.log(tmpData);
-      for(let i = 0; i < state.categoryList.length; i++){
-        const category = state.categoryList[i].categoryName;
-        monthData.push(Number(tmpData[category]));
-      }
-      // console.log(monthData);
-      return monthData;
-    },
     getCategoryNameList: (state) => {
       const categoryNameList = state.categoryList.map(item => item.categoryName);
       return categoryNameList;
-    },
-    getTotal: (state) => {
-      if(state.statisticsData[0]){
-        return state.statisticsData[0].total.toLocaleString();
-      }
-      return '';
     },
   },
   mutations: {
@@ -99,59 +74,7 @@ export default createStore<dataType>({
       sessionStorage.setItem('userName', String(payload.userName));
     },
     setCategory: (state, payload: categoryType[]) => {
-      // console.log('start');
-      // console.log(payload);
       state.categoryList = payload;
-      // for(let i = 0; i < payload.length; i++){
-      //   // console.log(i);
-      //   const tmp: categoryType = payload[i];
-      //   // console.log(tmp);
-      //   state.categoryList.push(tmp);
-      // }
-      // console.log('set category in method.');
-    },
-    setStatisticsData: (state, payload: statisticsType[]) => {
-      state.statisticsData = [];
-      const oldestDate = payload[payload.length - 1].month
-      const oldestYear = Number(oldestDate.split('-')[0]);
-      const oldestMonth = Number(oldestDate.split('-')[1]);
-      let index = 0;
-      const nowDate = new Date();
-      const nowYear = nowDate.getFullYear();
-      const nowMonth = nowDate.getMonth() + 1;
-      if((oldestYear > nowYear) || ((oldestYear === nowYear) && (oldestMonth > nowMonth))) return;
-      for(let y = nowYear; y >= oldestYear; y--){
-        for(let m = 12; m >= 1; m--){
-          if(y === nowYear && m > nowMonth) continue;
-          const tmp = (index < payload.length) ? payload[index].month : null;
-          const tmpYear = (tmp !== null) ? Number(tmp.split('-')[0]) : null;
-          const tmpMonth = (tmp !== null) ? Number(tmp.split('-')[1]) : null;
-          if((tmpMonth && tmpYear) && (y === tmpYear && m === tmpMonth)){
-            const tmpData: statisticsType = payload[index];
-            let total = 0;
-            state.categoryList.forEach((elem: categoryType) => {
-              total += Number(tmpData[elem.categoryName]);
-            });
-            const data: statisticsType = tmpData;
-            data.month = data.month.replace('-', '/');
-            data.total = total;
-            state.statisticsData.push(data);
-            index++;
-          }
-          else{
-            const data: statisticsType = {
-              month: y.toString() + '/' + m.toString().padStart(2, '0'),
-              total: Number(0),
-            };
-            state.categoryList.forEach((elem: categoryType) => {
-              data[elem.categoryName] = Number(0);
-            });
-            state.statisticsData.push(data);
-          }
-          if(y === oldestYear && m <= oldestMonth ) break;
-        }
-      }
-      // console.log(state.statisticsData);
     },
     add: (state) => {
       const data: detailsType = {
@@ -164,15 +87,6 @@ export default createStore<dataType>({
       };
       state.inputList.push(data);
     },
-    setMonthData: (state, data: string[]) => {
-      state.monthData = data.map(Number);
-    },
-    loading: (state) => {
-      state.loading = true;
-    },
-    loaded: (state) => {
-      state.loading = false;
-    },
   },
   actions: {
     loadCategory: (ctx) => {
@@ -180,9 +94,6 @@ export default createStore<dataType>({
     },
     setCategory: (ctx, payload: categoryType[]) => {
       ctx.commit('setCategory', payload);
-    },
-    setStatisticsData: (ctx, payload: statisticsType[]) => {
-      ctx.commit('setStatisticsData', payload);
     },
     add: (ctx) => {
       ctx.commit('add');

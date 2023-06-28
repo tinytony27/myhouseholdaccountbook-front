@@ -5,13 +5,18 @@ import apiClient from '@/common/http';
 import YearDataComp from '@/components/YearDataComp.vue';
 import MonthDataComp from '@/components/MonthDataComp.vue';
 import DayDataComp from '@/components/DayDataComp.vue';
-import TableComp from '@/components/TableComp.vue';
+// import TableComp from '@/components/TableComp.vue';
 import { YEAR_DATA, MONTH_DATA, DAY_DATA } from '@/common/const';
 
 const store = useStore();
-const checkDate = new Date();
 const selectDataFlag = ref<number>(-1);
-const matrixDataSet = ref({});
+const checkYear = ref<number>(new Date().getFullYear());
+const checkDate = new Date();
+const selectedFilter = ref<number>(0);
+const monthlyMatrixDataSet = ref({});
+const monthlyGraphDataSet = ref([]);
+const yearlyMatrixDataSet = ref({});
+const yearlyGraphDataSet = ref([]);
 
 onMounted(() => {
   setTimeout(() => setSelectDataFlag(MONTH_DATA), 100);
@@ -23,36 +28,57 @@ onMounted(() => {
       // console.log('set category.');
     })
     .catch((err) => {
-      console.info(err);
+      console.error(err);
     });
-    // console.log('(END) Home Mounted.');
-  apiClient.get('/getstatistics')
+  // console.log('(END) Home Mounted.');
+  
+  const paramM = {
+    month: dateFormat()
+  };
+  apiClient.post('/monthsbycategory/graph', paramM)
     .then( response => { return response.data; })
     .then( json => {
-      store.dispatch('setStatisticsData', json.details);
+      monthlyGraphDataSet.value = json.details;
     })
     .catch((err) => {
-      console.info(err);
+      console.error(err);
     });
-  const param = {month: dateFormat()};
-  apiClient.post('/monthsbycategory/graph', param)
+  apiClient.post('/monthsbycategory/matrix', paramM)
     .then( response => { return response.data; })
     .then( json => {
-      store.commit('setMonthData', json.details);
-      // console.log('set MonthData.');
+      monthlyMatrixDataSet.value = json;
     })
     .catch((err) => {
-      console.info(err);
+      console.error(err);
     });
-  apiClient.post('/monthsbycategory/matrix', param)
+
+  const paramY = {
+    year: checkYear.value,
+    filter: selectedFilter.value
+  };
+  apiClient.post('/yearsbyfilter/graph', paramY)
     .then( response => { return response.data; })
     .then( json => {
-      matrixDataSet.value = json;
+      yearlyGraphDataSet.value = json.details;
     })
     .catch((err) => {
-      console.info(err);
+      console.error(err);
     });
+  apiClient.post('/yearsbyfilter/matrix', paramY)
+    .then( response => { return response.data; })
+    .then( json => {
+      yearlyMatrixDataSet.value = json.details;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  
 });
+
+const setSelectDataFlag = (flag: number) => {
+  selectDataFlag.value = flag;
+  // console.log('change data');
+};
 
 const dateFormat = (): string => {
   const year = checkDate.getFullYear().toString();
@@ -61,21 +87,62 @@ const dateFormat = (): string => {
   return year+'-'+month;
 };
 
-const setSelectDataFlag = (flag: number) => {
-  selectDataFlag.value = flag;
-  // console.log('change data');
+const changeYear = (change: number) => {
+  checkYear.value = checkYear.value + change;
+  const nowDataFlag = selectDataFlag.value;
+  selectDataFlag.value = -1;
+  const param = {
+    year: checkYear.value,
+    filter: selectedFilter.value
+  };
+  apiClient.post('/yearsbyfilter/graph', param)
+    .then( response => { return response.data; })
+    .then( json => {
+      yearlyGraphDataSet.value = json.details;
+      selectDataFlag.value = nowDataFlag;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  apiClient.post('/yearsbyfilter/matrix', param)
+    .then( response => { return response.data; })
+    .then( json => {
+      yearlyMatrixDataSet.value = json.details;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+const changeFilter = () => {
+  const nowDataFlag = selectDataFlag.value;
+  selectDataFlag.value = -1;
+  const param = {
+    year: checkYear.value,
+    filter: selectedFilter.value
+  };
+  apiClient.post('/yearsbyfilter/graph', param)
+    .then( response => { return response.data; })
+    .then( json => {
+      yearlyGraphDataSet.value = json.details;
+      selectDataFlag.value = nowDataFlag;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 };
 
 const changeMonth = (change: number) => {
   checkDate.setMonth(checkDate.getMonth() + change);
-
   const nowDataFlag = selectDataFlag.value;
   selectDataFlag.value = -1;
-  const param = {month: dateFormat()};
+  const param = {
+    month: dateFormat()
+  };
   apiClient.post('/monthsbycategory/graph', param)
     .then( response => { return response.data; })
     .then( json => {
-      store.commit('setMonthData', json.details);
+      monthlyGraphDataSet.value = json.details;
       selectDataFlag.value = nowDataFlag;
     })
     .catch((err) => {
@@ -84,8 +151,7 @@ const changeMonth = (change: number) => {
   apiClient.post('/monthsbycategory/matrix', param)
     .then( response => { return response.data; })
     .then( json => {
-      // console.log(json);
-      matrixDataSet.value = json;
+      monthlyMatrixDataSet.value = json;
     })
     .catch((err) => {
       console.info(err);
@@ -120,9 +186,30 @@ const changeMonth = (change: number) => {
       </div>
     </div>
     <div>
-      <YearDataComp v-if="selectDataFlag === YEAR_DATA" />
+      <div v-if="selectDataFlag === YEAR_DATA">
+        <div class="relative">
+          <div class="w-64 mx-auto border rounded bg-white">
+            <button class="w-10" @click="changeYear(-1)">
+              <span class="font-bold">&lt;</span>
+            </button>
+            <span class="px-14">{{checkYear}}年</span>
+            <button class="w-10" @click="changeYear(1)">
+              <span class="font-bold">&gt;</span>
+            </button>
+          </div>
+          <form class="sm:absolute sm:top-0 sm:left-5 sm:my-0 mt-1">
+            <label class="pr-2">フィルタ</label>
+            <select class="w-20" @change="changeFilter" v-model="selectedFilter">
+              <option :value="0">合計</option>
+              <option v-for="elem in store.state.categoryList" :key="elem.categoryID" :value="elem.categoryID">{{ elem.categoryName }}</option>
+            </select>
+          </form>
+        </div>
+        <YearDataComp :matrixDataSet="yearlyMatrixDataSet" :graphDataSet="yearlyGraphDataSet" :selectedFilter="selectedFilter" />
+      </div>
+
       <div v-if="selectDataFlag === MONTH_DATA">
-        <div class="w-64 mx-auto border rounded">
+        <div class="w-64 mx-auto border rounded bg-white">
           <button class="w-10" @click="changeMonth(-1)">
             <span class="font-bold">&lt;</span>
           </button>
@@ -131,12 +218,10 @@ const changeMonth = (change: number) => {
             <span class="font-bold">&gt;</span>
           </button>
         </div>
-        <MonthDataComp :dataSet="matrixDataSet" />
+        <MonthDataComp :matrixDataSet="monthlyMatrixDataSet" :graphDataSet="monthlyGraphDataSet" />
       </div>
+
       <!-- <DayDataComp v-if="selectDataFlag === DAY_DATA" /> -->
     </div>
-    <!-- <div class="relative h-full w-full pt-1 pb-28 overflow-y-scroll">
-      <TableComp :childNumber="selectDataFlag" :dataSet="matrixDataSet" />
-    </div> -->
   </div>
 </template>
