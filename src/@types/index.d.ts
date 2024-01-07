@@ -1,3 +1,10 @@
+type detailsDataSetType = {
+  detailDate: string;
+  category: string;
+  price: number;
+  memo: string | null;
+};
+
 type detailsType = {
   detailsID: number;
   categoryID: number;
@@ -7,6 +14,10 @@ type detailsType = {
   createdUserID: string | null;
   // deleted_flag: boolean;
   // deleted_date: string;
+};
+
+type detailInputType = detailsType & {
+  detailDay: string;
 };
 
 type categoryType = {

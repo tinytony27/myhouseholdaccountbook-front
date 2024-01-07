@@ -11,9 +11,9 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 /* import specific icons */
-import { faHome, faSquarePen, faReceipt } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faSquarePen, faReceipt, faChartColumn, faCircleUser } from '@fortawesome/free-solid-svg-icons';
 // import { faTwitter } from '@fortawesome/free-brands-svg-icons';
-import { faAddressCard } from '@fortawesome/free-regular-svg-icons';
+import { faAddressCard, faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 
 /* add icons to the library */
 library.add(
@@ -21,6 +21,9 @@ library.add(
   faHome,
   faSquarePen,
   faReceipt,
+  faChartColumn,
+  faCircleUser,
+  // faPenToSquare
 );
 
 createApp(App)

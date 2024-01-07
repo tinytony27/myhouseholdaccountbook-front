@@ -5,7 +5,6 @@ import { BAR_LABEL, BAR_BACKGROUND_COLOR, BAR_BORDER_COLOR } from '@/common/cons
 import type { ChartData, ChartOptions } from 'chart.js';
 
 // それぞれの部品をインポートしていきます。
-// まだ種類があると思いますが、とりあえず手当たり次第importしておきます。
 import {
   Chart as ChartJS,
   Title,

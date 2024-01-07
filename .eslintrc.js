@@ -16,7 +16,9 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off'
   },
   globals: {
+    detailsDataSetType: true,
     detailsType: true,
+    detailInputType: true,
     categoryType: true,
     statisticsType: true,
     defineProps: true,

@@ -8,16 +8,16 @@ defineProps(['childNumber', 'dataSet']);
 </script>
 
 <template>
-  <div class="">
-    <table>
-      <thead>
-        <tr>
-          <th v-for="head in TABLE_HEAD[childNumber]" :key="head">{{ head }}</th>
+  <div class="overflow-y-scroll">
+    <table class="h-full w-full bg-white">
+      <thead class="">
+        <tr class="">
+          <th class="border border-black bg-blue-200" :class="head[1]" v-for="(head, i) in TABLE_HEAD[childNumber]" :key="'head'+i">{{ head[0] }}</th>
         </tr>
       </thead>
-      <tbody>
-        <tr v-for="(dataList, i) in dataSet" :key="i">
-          <td v-for="(data, j) in dataList" :key="j">{{ data }}</td>
+      <tbody class="">
+        <tr class="" v-for="(data, i) in dataSet" :key="i">
+          <td class="border border-black" v-for="(dataIndex, j) in TABLE_HEAD[childNumber]" :key="j">{{ data[dataIndex[2]] }}</td>
         </tr>
       </tbody>
     </table>

@@ -51,8 +51,9 @@ export const DOUGHNUT_BACKGROUND_COLOR = [
   'rgb(255, 205, 86)'
 ];
 
+export const MONTH_TABLE_INPUT = 0;
 export const TABLE_HEAD = [
-  [''],
-  ['カテゴリ', '割合', '金額'],
+  [['日付', 'w-20', 'detailDate'], ['費目', 'w-12', 'category'], ['金額', 'w-16', 'price'], ['メモ', 'w-40', 'memo']],
+  ['費目', '割合', '金額'],
   []
 ];

@@ -6,7 +6,7 @@ type authType = {
 };
 
 type dataType = {
-  inputList: detailsType[];
+  inputModel: detailInputType | null;
   categoryList: categoryType[];
   statisticsData: statisticsType[];
   auth: authType;
@@ -16,7 +16,7 @@ type dataType = {
 
 export default createStore<dataType>({
   state: {
-    inputList: [],
+    inputModel: null,
     categoryList: [],
     statisticsData: [],
     auth: {
@@ -34,16 +34,16 @@ export default createStore<dataType>({
   },
   mutations: {
     initInputList: (state) => {
-      state.inputList = [];
-      const input: detailsType = {
+      const input: detailInputType = {
         detailsID: 0,
         categoryID: state.categoryList[0].categoryID,
         detailDate: '',
+        detailDay: '',
         price: null,
         memo: null,
         createdUserID: state.auth.userID,
       };
-      state.inputList.push(input);
+      state.inputModel = input;
     },
     loadCategory: (state) => {
       const c1 = {
@@ -76,17 +76,6 @@ export default createStore<dataType>({
     setCategory: (state, payload: categoryType[]) => {
       state.categoryList = payload;
     },
-    add: (state) => {
-      const data: detailsType = {
-        detailsID: 0,
-        categoryID: state.categoryList[0].categoryID,
-        detailDate: '',
-        price: null,
-        memo: null,
-        createdUserID: state.auth.userID
-      };
-      state.inputList.push(data);
-    },
   },
   actions: {
     loadCategory: (ctx) => {
@@ -94,9 +83,6 @@ export default createStore<dataType>({
     },
     setCategory: (ctx, payload: categoryType[]) => {
       ctx.commit('setCategory', payload);
-    },
-    add: (ctx) => {
-      ctx.commit('add');
     },
   },
   modules: {

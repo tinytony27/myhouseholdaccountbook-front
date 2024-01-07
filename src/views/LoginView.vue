@@ -13,9 +13,11 @@ const login = () => {
     userID: userID.value,
     password: password.value
   };
+  // console.log(apiClient.post);
   apiClient.post('/login', data)
     .then( response => { return response.data; })
     .then( json => {
+      // console.log(json);
       if(json.result === 'SUCCESS'){
         store.commit('setAuth', json.auth);
         router.push('/');
