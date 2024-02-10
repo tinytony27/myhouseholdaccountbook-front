@@ -35,7 +35,7 @@ const store = useStore();
 </script>
 
 <template>
-  <div class="relative h-screen w-full z-30 bg-green-100">
+  <div class="fixed h-screen w-full z-40 bg-green-100">
     <div class="absolute top-0 bottom-0 left-0 right-0 m-auto h-44 w-80 py-7 px-2 rounded border bg-gray-50">
       <div class="w-full">
         <label class="inline-block w-24 mr-4 font-semibold">ユーザID</label>

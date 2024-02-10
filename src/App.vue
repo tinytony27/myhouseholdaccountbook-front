@@ -34,7 +34,7 @@ const store = useStore();
     <!-- サイドメニュー -->
     <nav class="p-10 bg-blue-100">
       <div class="p-1 pb-5 border-b border-black">
-        <router-link to="/login">
+        <router-link to="/mypage">
           <div class="text-xl">
             <span class="inline-block w-10">
               <font-awesome-icon icon="fa-solid fa-circle-user" />

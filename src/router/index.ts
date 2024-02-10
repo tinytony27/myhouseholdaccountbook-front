@@ -3,6 +3,7 @@ import { authorizeToken } from './guards';
 import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
 import InputView from '@/views/InputView.vue';
+import MyPageView from '@/views/MyPageView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -25,6 +26,14 @@ const routes: Array<RouteRecordRaw> = [
     path: '/login',
     name: 'login',
     component: LoginView
+  },
+  {
+    path: '/mypage',
+    name: 'mypage',
+    component: MyPageView,
+    meta: {
+      requiresAuth: true
+    }
   }
 ]
 

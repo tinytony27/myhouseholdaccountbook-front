@@ -73,6 +73,13 @@ export default createStore<dataType>({
       sessionStorage.setItem('userID', String(payload.userID));
       sessionStorage.setItem('userName', String(payload.userName));
     },
+    clearAuth: (state) => {
+      state.auth.userID = null;
+      state.auth.userName = null;
+      sessionStorage.clear();
+      // sessionStorage.setItem('userID', '');
+      // sessionStorage.setItem('userName', '');
+    },
     setCategory: (state, payload: categoryType[]) => {
       state.categoryList = payload;
     },

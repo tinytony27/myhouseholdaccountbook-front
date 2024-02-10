@@ -22,6 +22,7 @@ onBeforeMount(() => {
   targetYear.value = nowDate.getFullYear();
   targetMonth.value = nowDate.getMonth() + 1;
   setYearMonth();
+  console.log(apiClient.getUri());
   apiClient.get('/category')
     .then( response => { return response.data; })
     .then( json => {
